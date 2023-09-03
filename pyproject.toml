@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "labels"
+version = "0.1.0"
+description = "My scripts for generating Brother P-Touch labels"
+authors = ["Luiz Ribeiro <luizribeiro@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+Pillow = "^10.0.0"
+qrcode = "^7.4.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
