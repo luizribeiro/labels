@@ -1,7 +1,10 @@
 { pkgs, ... }:
 
 {
-  packages = with pkgs; [ ptouch-print ];
+  packages = with pkgs; [
+    feh
+    ptouch-print
+  ];
 
   languages.python.enable = true;
   languages.python.poetry = {
