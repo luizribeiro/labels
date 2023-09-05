@@ -138,8 +138,8 @@ label = Label(
     Horizontal([
         QRCode("sup"),
         Vertical([
-            Text("Hello"),
-            Text("World"),
+            Text("M2", size=30),
+            Text("Hex Nut", size=12),
         ]),
         QRCode("https://pillow.readthedocs.io/en/latest/reference/Image.html"),
     ]),
