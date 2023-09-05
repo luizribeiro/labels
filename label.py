@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from typing import Sequence
 
 import qrcode
-from PIL import Image, ImageDraw, ImageFont, ImageOps
+from PIL import Image, ImageDraw, ImageFont, ImageChops
 
 WHITE = 1
 BLACK = 0
@@ -15,8 +15,19 @@ PADDING = 2 # mm
 
 MAX_HEIGHT = 76 # px (???)
 
+
 def px(l) -> int:
     return int(DPI * l * 0.03937007874015748)
+
+
+def trim(im):
+    # from https://stackoverflow.com/questions/10615901/trim-whitespace-using-pil
+    bg = Image.new(im.mode, im.size, im.getpixel((0,0)))
+    diff = ImageChops.difference(im, bg)
+    diff = ImageChops.add(diff, diff, 2.0, -100)
+    bbox = diff.getbbox()
+    if bbox:
+        return im.crop(bbox)
 
 
 
@@ -115,7 +126,7 @@ class QRCode(Widget):
         qr = qrcode.QRCode(box_size=1)
         qr.add_data(self.data)
         qr.make()
-        img_qr = qr.make_image().resize((width, height))
+        img_qr = trim(qr.make_image()).resize((width, height))
         draw._image.paste(img_qr, (0, 0))
 
     def layout(self, _width: int, height: int) -> (int, int):
