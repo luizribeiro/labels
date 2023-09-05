@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 {
-  packages = with pkgs; [
+  packages = with pkgs; if pkgs.stdenv.isDarwin then [] else [
     feh
     ptouch-print
   ];
