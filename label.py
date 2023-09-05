@@ -95,12 +95,15 @@ class Vertical(Widget):
 
 
 class Text(Widget):
-    def __init__(self, text: str) -> None:
+    def __init__(self, text: str, size: int = 20) -> None:
         self.text = text
+        self.size = size
 
     def render(self, draw: ImageDraw.Draw) -> None:
-        font = ImageFont.truetype("fonts/Roboto-Bold.ttf", size=30)
-        draw.text((0, 0), self.text, font=font, fill=BLACK)
+        W, H = draw.im.size
+        font = ImageFont.truetype("fonts/Roboto-Bold.ttf", size=self.size)
+        _, _, w, h = draw.textbbox((0, 0), self.text, font=font)
+        draw.text(((W-w)/2, (H-h)/2), self.text, font=font, fill=BLACK)
 
 
 class QRCode(Widget):
