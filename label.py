@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from abc import ABC, abstractmethod
+from abc import ABC
 from typing import Sequence
 
 import qrcode
@@ -32,7 +32,6 @@ def trim(im):
 
 
 class Widget(ABC):
-    @abstractmethod
     def render(self, draw: ImageDraw.Draw) -> None:
         pass
 
