@@ -119,34 +119,42 @@ class Text(Widget):
 
 
 class QRCode(Widget):
-    def __init__(self, data: str) -> None:
+    def __init__(self, data: str, padding: int = 0) -> None:
         self.data = data
+        self.padding = padding
 
     def render(self, draw: ImageDraw.Draw) -> None:
         width, height = draw.im.size
+        padding = self.padding
         qr = qrcode.QRCode(box_size=1)
         qr.add_data(self.data)
         qr.make()
-        img_qr = trim(qr.make_image()).resize((width, height))
-        draw._image.paste(img_qr, (0, 0))
+        img_qr = trim(qr.make_image()).resize((width * (100 - 2 * padding) // 100, height * (100 - 2 * padding) // 100))
+        draw._image.paste(img_qr, (width * padding // 100, height * padding // 100))
 
     def layout(self, _width: int, height: int) -> (int, int):
         return (height, height)
 
 
 class SVG(Widget):
-    def __init__(self, src: str) -> None:
+    def __init__(self, src: str, padding: int = 0) -> None:
         self.src = src
+        self.padding = padding
 
     def render(self, draw: ImageDraw.Draw) -> None:
         width, height = draw.im.size
+        padding = self.padding
         with open(self.src, 'rb') as svg_file:
             svg_content = svg_file.read()
-        png_bytes = cairosvg.svg2png(bytestring=svg_content, output_width=width, output_height=height)
+        png_bytes = cairosvg.svg2png(
+            bytestring=svg_content,
+            output_width=width * (100 - 2 * padding) // 100,
+            output_height=height * (100 - 2 * padding) // 100
+        )
         svg_image = Image.open(BytesIO(png_bytes))
         _r, _g, _b, alpha_channel = svg_image.split()
         image = ImageOps.invert(alpha_channel)
-        draw._image.paste(image, (0, 0))
+        draw._image.paste(image, (width * padding // 100, height * padding // 100))
 
     def layout(self, _width: int, height: int) -> (int, int):
         return (height, height)
@@ -156,12 +164,12 @@ label = Label(
     px(LABEL_WIDTH),
     min(px(TAPE_WIDTH), MAX_HEIGHT),
     Horizontal([
-        SVG("icons/screw-head-phillips-combo.svg"),
+        SVG("icons/screw-head-phillips-combo.svg", padding=5),
         Vertical([
             Text("M2", size=30),
             Text("Hex Nut", size=12),
         ]),
-        QRCode("https://pillow.readthedocs.io/en/latest/reference/Image.html"),
+        QRCode("https://pillow.readthedocs.io/en/latest/reference/Image.html", padding=5),
     ]),
 )
 
