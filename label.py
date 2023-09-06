@@ -164,10 +164,18 @@ label = Label(
     px(LABEL_WIDTH),
     min(px(TAPE_WIDTH), MAX_HEIGHT),
     Horizontal([
-        SVG("icons/screw-head-phillips-combo.svg", padding=5),
+        SVG("icons/screw-head-phillips.svg", padding=5),
         Vertical([
-            Text("M2", size=30),
-            Text("Hex Nut", size=12),
+            Horizontal([
+                Text("M6", size=22),
+                Text("20mm", size=14),
+            ]),
+            Vertical([
+                Text("", size=10),
+                Text("Phillips", size=10),
+                Text("Pan Head Screws", size=10),
+                Text("", size=10),
+            ]),
         ]),
         QRCode("https://pillow.readthedocs.io/en/latest/reference/Image.html", padding=5),
     ]),
