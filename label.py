@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 from abc import ABC
+from io import BytesIO
 from typing import Sequence
 
+import cairosvg
 import qrcode
-from PIL import Image, ImageDraw, ImageFont, ImageChops
+from PIL import Image, ImageDraw, ImageFont, ImageChops, ImageOps
 
 WHITE = 1
 BLACK = 0
@@ -132,11 +134,29 @@ class QRCode(Widget):
         return (height, height)
 
 
+class SVG(Widget):
+    def __init__(self, src: str) -> None:
+        self.src = src
+
+    def render(self, draw: ImageDraw.Draw) -> None:
+        width, height = draw.im.size
+        with open(self.src, 'rb') as svg_file:
+            svg_content = svg_file.read()
+        png_bytes = cairosvg.svg2png(bytestring=svg_content, output_width=width, output_height=height)
+        svg_image = Image.open(BytesIO(png_bytes))
+        _r, _g, _b, alpha_channel = svg_image.split()
+        image = ImageOps.invert(alpha_channel)
+        draw._image.paste(image, (0, 0))
+
+    def layout(self, _width: int, height: int) -> (int, int):
+        return (height, height)
+
+
 label = Label(
     px(LABEL_WIDTH),
     min(px(TAPE_WIDTH), MAX_HEIGHT),
     Horizontal([
-        QRCode("sup"),
+        SVG("icons/screw-head-phillips-combo.svg"),
         Vertical([
             Text("M2", size=30),
             Text("Hex Nut", size=12),
